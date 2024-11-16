@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos base personalizados */
+:root {
+  --primary: #17a2b8;
+  --secondary: #00949a;
+  --background: #f8f9fa;
+  --positive: #28a745;
+  --negative: #dc3545;
+  --warning: #ffc107;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
