@@ -18,18 +18,8 @@ const sequelize = new Sequelize(
 );
 
 // Sincronización de la base de datos sin eliminar tablas existentes
-sequelize.sync({ alter: true }).then(async () => {
+sequelize.sync({ alter: true }).then(() => {
   console.log("Tablas sincronizadas con la base de datos.");
-
-  // Agrega la columna 'name' sin la restricción NOT NULL
-  await sequelize.query('ALTER TABLE "Bodegas" ADD COLUMN IF NOT EXISTS "name" VARCHAR(255)');
-
-  // Asegúrate de que todos los registros existentes tengan un valor para 'name'
-  await sequelize.query('UPDATE "Bodegas" SET "name" = \'default_name\' WHERE "name" IS NULL');
-
-  // Luego, agrega la restricción NOT NULL
-  await sequelize.query('ALTER TABLE "Bodegas" ALTER COLUMN "name" SET NOT NULL');
-
 }).catch((error) => {
   console.error("Error al sincronizar las tablas:", error);
 });

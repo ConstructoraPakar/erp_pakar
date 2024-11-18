@@ -28,17 +28,17 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    // Llama a la función onLoginSuccess
-    console.log('Calling onLoginSuccess'); // Agrega este log
-    console.log(typeof onLoginSuccess); // Agrega este log para verificar el tipo de onLoginSuccess
-    onLoginSuccess(user, res);
+    // Generar token JWT
+    const token = jwt.sign({ id: user.id, role: user.role }, 'SECRET_KEY', { expiresIn: '1h' });
 
     // Registrar la conexión
     await user.logConnection();
 
+    // Llamar a la función onLoginSuccess
+    onLoginSuccess(user, res);
   } catch (error) {
     console.error('Error en login:', error);
-    res.status(500).json({ message: 'Error del servidor' }); // Asegúrate de que el mensaje sea informativo
+    res.status(500).json({ message: 'Error del servidor' });
   }
 });
 

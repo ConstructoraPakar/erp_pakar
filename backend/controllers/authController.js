@@ -1,4 +1,3 @@
-
 const { User } = require('../models'); // Asegúrate de que el modelo User esté importado correctamente
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
