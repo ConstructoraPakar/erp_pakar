@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const sequelize = require('./models/database'); // Importamos la conexión a la base de datos
+const sequelize = require('./config/database'); // Actualizar la ruta a config/database
 const models = require('./models'); // Importamos todos los modelos desde index.js
 
 // Importar las rutas
@@ -14,11 +14,16 @@ const authRoutes = require('./routes/auth'); // Ruta de autenticación
 
 const cors = require('cors');
 
-
 // Middleware para procesar JSON
 app.use(express.json()); // Para manejar JSON en el cuerpo de la solicitud
 
-app.use(cors());
+// Configuración de CORS
+app.use(cors({
+  origin: 'http://localhost:3001', // Cambia al puerto 3001
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+}));
+
 // Definir las rutas
 app.use('/administracion', administracionRoutes);
 app.use('/bodega', bodegaRoutes);

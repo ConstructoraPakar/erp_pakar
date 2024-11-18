@@ -1,7 +1,7 @@
 // models/Administracion.js
 
 const { DataTypes } = require('sequelize');
-const sequelize = require('./database'); // Asegúrate de que la ruta sea correcta
+const sequelize = require('../config/database'); // Actualizar la ruta a config/database
 
 // Definir el modelo Administracion simplificado
 const Administracion = sequelize.define('Administracion', {

@@ -1,21 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-const User = require('../models/user'); // Importar el modelo User
+const { User, UserConnections } = require('../models/user'); // Importar el modelo User
 const authenticateToken = require('../middleware/authMiddleware'); // Importa el middleware de autenticación
 
 // Usar el middleware en las rutas de usuarios
 router.get('/', authenticateToken, async (req, res) => {
-  try {
-    const users = await User.findAll();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: 'Ocurrió un error al obtener los usuarios' });
-  }
-});
-
-// Obtener todos los usuarios
-router.get('/', async (req, res) => {
   try {
     const users = await User.findAll();
     res.json(users);
@@ -76,6 +66,38 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: 'Usuario eliminado correctamente' });
   } catch (error) {
     res.status(500).json({ error: 'Ocurrió un error al eliminar el usuario' });
+  }
+});
+
+// Ruta para obtener datos del perfil y el historial de conexiones
+router.get('/profile', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Obtener historial de conexiones del usuario
+    const historial = await UserConnections.findAll({
+      where: { userId },
+      order: [['createdAt', 'DESC']],
+    });
+
+    res.json({
+      user: {
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+      },
+      historial: historial.map(conn => ({
+        fecha: new Date(conn.createdAt).toLocaleDateString(),
+        hora: new Date(conn.createdAt).toLocaleTimeString(),
+      })),
+    });
+  } catch (error) {
+    console.error('Error al obtener el perfil:', error);
+    res.status(500).json({ message: 'Error del servidor' });
   }
 });
 

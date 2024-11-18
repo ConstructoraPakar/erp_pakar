@@ -1,25 +1,17 @@
-const { DataTypes } = require('sequelize'); // Importamos DataTypes desde sequelize
-const sequelize = require('./database'); // Asegúrate de que la ruta sea correcta
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database'); // Actualizar la ruta a config/database
 
-// Definir el modelo Bodega
+// Definir el modelo Bodega simplificado
 const Bodega = sequelize.define('Bodega', {
   id: {
-    type: DataTypes.INTEGER, // Usamos DataTypes para definir el tipo de dato
+    type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  nombre: {
+  name: {
     type: DataTypes.STRING,
-    allowNull: false,
-  },
-  ubicacion: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  capacidad: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true, // Permitir valores nulos inicialmente
   },
 });
 
-module.exports = Bodega; // Exportar correctamente el modelo Bodega
+module.exports = Bodega;

@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize'); // Importamos DataTypes desde sequelize
-const sequelize = require('./database'); // Importamos la conexión a la base de datos
+const sequelize = require('../config/database'); // Cambia la ruta a '../config/database'
 
 // Definir el modelo Finanzas
 const Finanzas = sequelize.define('Finanzas', {

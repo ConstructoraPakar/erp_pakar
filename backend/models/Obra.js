@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize'); // Importamos DataTypes desde sequelize
-const sequelize = require('./database'); // Importamos la conexión a la base de datos
+const sequelize = require('../config/database'); // Asegúrate de que esta línea esté correcta
 
 // Definir el modelo Obra
 const Obra = sequelize.define('Obra', {
