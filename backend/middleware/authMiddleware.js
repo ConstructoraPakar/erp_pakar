@@ -1,17 +1,22 @@
-// backend/middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (token == null) return res.sendStatus(401); // Si no hay token, devuelve 401 (No autorizado)
-
-  jwt.verify(token, 'SECRET_KEY', (err, user) => { // Usa la misma clave secreta que usaste para generar el token
-    if (err) return res.sendStatus(403); // Si el token no es válido, devuelve 403 (Prohibido)
+const authMiddleware = async (req, res, next) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (!token) {
+    return res.status(401).json({ message: 'Acceso no autorizado' });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findByPk(decoded.id);
+    if (!user) {
+      return res.status(401).json({ message: 'Usuario no encontrado' });
+    }
     req.user = user;
-    next(); // Si el token es válido, permite el acceso a la ruta
-  });
-}
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token inválido' });
+  }
+};
 
-module.exports = authenticateToken;
+module.exports = authMiddleware;

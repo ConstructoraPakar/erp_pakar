@@ -2,20 +2,10 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const User = require('../models/user'); // Importar el modelo User
-const authenticateToken = require('../middleware/authMiddleware'); // Importa el middleware de autenticación
-
-// Usar el middleware en las rutas de usuarios
-router.get('/', authenticateToken, async (req, res) => {
-  try {
-    const users = await User.findAll();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: 'Ocurrió un error al obtener los usuarios' });
-  }
-});
+const authenticateToken = require('../middleware/authMiddleware'); // Middleware de autenticación
 
 // Obtener todos los usuarios
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     const users = await User.findAll();
     res.json(users);
@@ -40,7 +30,7 @@ router.post('/', async (req, res) => {
 });
 
 // Actualizar un usuario existente
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
   try {
@@ -65,7 +55,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Eliminar un usuario
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.findByPk(id);
@@ -76,6 +66,41 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: 'Usuario eliminado correctamente' });
   } catch (error) {
     res.status(500).json({ error: 'Ocurrió un error al eliminar el usuario' });
+  }
+});
+
+// ==================== NUEVAS RUTAS ====================
+
+// Obtener el perfil del usuario autenticado
+router.get('/profile', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id; // ID del usuario obtenido del token
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ['password'] },
+    });
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener el perfil del usuario' });
+  }
+});
+
+// Obtener el historial de inicios de sesión del usuario
+router.get('/login-history', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { limit = 10 } = req.query; // Límite predeterminado de 10 registros
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    // Obtener los últimos `limit` registros del historial
+    const loginHistory = user.loginHistory.slice(-limit).reverse();
+    res.json(loginHistory);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener el historial de inicios de sesión' });
   }
 });
 

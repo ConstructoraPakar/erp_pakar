@@ -1,6 +1,6 @@
 // backend/models/user.js
 const { DataTypes } = require('sequelize');
-const sequelize = require('./database');
+const sequelize = require('../config/database');
 const bcrypt = require('bcrypt');
 
 // Definir el modelo User
@@ -10,9 +10,10 @@ const User = sequelize.define('User', {
     primaryKey: true,
     autoIncrement: true,
   },
-  name: {
+  username: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
   },
   email: {
     type: DataTypes.STRING,
@@ -23,7 +24,16 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  // Otros campos personales
+  // ...
+  loginHistory: {
+    type: DataTypes.JSONB,
+    defaultValue: [],
+  },
+}, {
+  timestamps: true,
 });
+
 
 // Encriptar contraseña antes de guardar
 User.beforeCreate(async (user) => {
