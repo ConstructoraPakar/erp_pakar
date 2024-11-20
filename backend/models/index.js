@@ -6,7 +6,6 @@ const sequelize = require('../config/database');
 const basename = path.basename(__filename);
 const db = {};
 
-// Cargar y inicializar todos los modelos
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
@@ -18,14 +17,14 @@ fs.readdirSync(__dirname)
   .forEach((file) => {
     const model = require(path.join(__dirname, file));
     if (typeof model.init === 'function') {
-      model.init(sequelize, Sequelize.DataTypes); // Inicializar con Sequelize
+      model.init(sequelize, Sequelize.DataTypes);
     }
     db[model.name] = model;
   });
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
-    db[modelName].associate(db); // Establecer relaciones si existen
+    db[modelName].associate(db);
   }
 });
 

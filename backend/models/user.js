@@ -39,10 +39,6 @@ class User extends Model {
     );
   }
 
-  static associate(models) {
-    // Relaciones con otros modelos si aplica
-  }
-
   async validPassword(password) {
     return await bcrypt.compare(password, this.password);
   }
