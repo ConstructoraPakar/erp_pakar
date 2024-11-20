@@ -10,7 +10,10 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
       // Buscar usuario por email
-      const user = await User.findOne({ where: { email } });
+      const user = await User.findOne({
+        where: { email: req.body.email },
+      });
+      
       if (!user) {
         return res.status(404).json({ message: 'Usuario no encontrado' });
       }

@@ -10,11 +10,6 @@ class User extends Model {
           primaryKey: true,
           autoIncrement: true,
         },
-        username: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          unique: true,
-        },
         email: {
           type: DataTypes.STRING,
           allowNull: false,
@@ -32,8 +27,8 @@ class User extends Model {
       {
         sequelize,
         modelName: 'User',
-        tableName: 'users',
-        timestamps: true, // Para createdAt y updatedAt
+        tableName: 'Users',
+        timestamps: true,
         hooks: {
           beforeCreate: async (user) => {
             const salt = await bcrypt.genSalt(10);
@@ -45,7 +40,7 @@ class User extends Model {
   }
 
   static associate(models) {
-    // Relación con otros modelos si es necesario
+    // Relaciones con otros modelos si aplica
   }
 
   async validPassword(password) {
