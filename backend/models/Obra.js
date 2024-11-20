@@ -1,29 +1,39 @@
-const { DataTypes } = require('sequelize'); // Importamos DataTypes desde sequelize
-const sequelize = require('./database'); // Importamos la conexión a la base de datos
+const { Model, DataTypes } = require('sequelize');
 
-// Definir el modelo Obra
-const Obra = sequelize.define('Obra', {
-  id: {
-    type: DataTypes.INTEGER, // Usamos DataTypes en lugar de Sequelize
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  name: {
-    type: DataTypes.STRING, // Usamos DataTypes para STRING
-    allowNull: false,
-  },
-  description: {
-    type: DataTypes.TEXT, // Usamos DataTypes para TEXT
-    allowNull: false,
-  },
-  startDate: {
-    type: DataTypes.DATE, // Usamos DataTypes para DATE
-    allowNull: false,
-  },
-  endDate: {
-    type: DataTypes.DATE, // Usamos DataTypes para DATE
-    allowNull: true,
-  },
-});
+class Obra extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        description: {
+          type: DataTypes.TEXT,
+          allowNull: false,
+        },
+        startDate: {
+          type: DataTypes.DATE,
+          allowNull: false,
+        },
+        endDate: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+      },
+      {
+        sequelize,
+        modelName: 'Obra',
+        tableName: 'obras', // Nombre de la tabla en la base de datos
+        timestamps: false, // Cambiar según sea necesario
+      }
+    );
+  }
+}
 
-module.exports = Obra; // Exportamos correctamente el modelo Obra
+module.exports = Obra;

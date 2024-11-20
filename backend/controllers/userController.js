@@ -1,33 +1,22 @@
-const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user'); // Cambiado 'User' a 'user'
 
-// Obtener información del perfil del usuario
-exports.getProfile = async (req, res) => {
+const authMiddleware = async (req, res, next) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (!token) {
+    return res.status(401).json({ message: 'Acceso no autorizado' });
+  }
   try {
-    const userId = req.user.id; // Asumiendo que el ID del usuario está disponible en req.user
-    const user = await User.findByPk(userId, {
-      attributes: { exclude: ['password'] },
-    });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findByPk(decoded.id);
     if (!user) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(401).json({ message: 'Usuario no encontrado' });
     }
-    res.json(user);
+    req.user = user;
+    next();
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener el perfil del usuario' });
+    res.status(401).json({ message: 'Token inválido' });
   }
 };
 
-// Obtener historial de inicios de sesión del usuario
-exports.getLoginHistory = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { limit } = req.query; // Número de registros a mostrar
-    const user = await User.findByPk(userId);
-    if (!user) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
-    }
-    const loginHistory = user.loginHistory.slice(-limit).reverse();
-    res.json(loginHistory);
-  } catch (error) {
-    res.status(500).json({ message: 'Error al obtener el historial de inicios de sesión' });
-  }
-};
+module.exports = authMiddleware;

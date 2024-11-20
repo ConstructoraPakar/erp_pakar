@@ -1,33 +1,43 @@
-const { DataTypes } = require('sequelize'); // Importamos DataTypes desde sequelize
-const sequelize = require('./database'); // Importamos la conexión a la base de datos
+const { Model, DataTypes } = require('sequelize');
 
-// Definir el modelo Proyecto
-const Proyecto = sequelize.define('Proyecto', {
-  id: {
-    type: DataTypes.INTEGER, // Usamos DataTypes en lugar de Sequelize
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  name: {
-    type: DataTypes.STRING, // Usamos DataTypes para STRING
-    allowNull: false,
-  },
-  description: {
-    type: DataTypes.TEXT, // Usamos DataTypes para TEXT
-    allowNull: false,
-  },
-  startDate: {
-    type: DataTypes.DATE, // Usamos DataTypes para DATE
-    allowNull: false,
-  },
-  endDate: {
-    type: DataTypes.DATE, // Usamos DataTypes para DATE
-    allowNull: true,
-  },
-  budget: {
-    type: DataTypes.DECIMAL(10, 2), // Usamos DataTypes para DECIMAL
-    allowNull: false,
-  },
-});
+class Proyecto extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        description: {
+          type: DataTypes.TEXT,
+          allowNull: false,
+        },
+        startDate: {
+          type: DataTypes.DATE,
+          allowNull: false,
+        },
+        endDate: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+        budget: {
+          type: DataTypes.DECIMAL(10, 2),
+          allowNull: false,
+        },
+      },
+      {
+        sequelize,
+        modelName: 'Proyecto',
+        tableName: 'proyectos',
+        timestamps: false, // Cambiar según sea necesario
+      }
+    );
+  }
+}
 
-module.exports = Proyecto; // Exportamos correctamente el modelo Proyecto
+module.exports = Proyecto;

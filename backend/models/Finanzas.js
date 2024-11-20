@@ -1,25 +1,35 @@
-const { DataTypes } = require('sequelize'); // Importamos DataTypes desde sequelize
-const sequelize = require('./database'); // Importamos la conexión a la base de datos
+const { Model, DataTypes } = require('sequelize');
 
-// Definir el modelo Finanzas
-const Finanzas = sequelize.define('Finanzas', {
-  id: {
-    type: DataTypes.INTEGER, // Usamos DataTypes en lugar de Sequelize
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  description: {
-    type: DataTypes.STRING, // Usamos DataTypes para STRING
-    allowNull: false,
-  },
-  amount: {
-    type: DataTypes.DECIMAL(10, 2), // Usamos DataTypes para DECIMAL
-    allowNull: false,
-  },
-  date: {
-    type: DataTypes.DATE, // Usamos DataTypes para DATE
-    allowNull: false,
-  },
-});
+class Finanzas extends Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        description: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        amount: {
+          type: DataTypes.DECIMAL(10, 2),
+          allowNull: false,
+        },
+        date: {
+          type: DataTypes.DATE,
+          allowNull: false,
+        },
+      },
+      {
+        sequelize,
+        modelName: 'Finanzas',
+        tableName: 'finanzas', // Nombre de la tabla en la base de datos
+        timestamps: false, // Cambiar según sea necesario
+      }
+    );
+  }
+}
 
-module.exports = Finanzas; // Exportar correctamente el modelo Finanzas
+module.exports = Finanzas;
